@@ -1,34 +1,30 @@
-def tip_calculator():
-    global ammount
-    global tip_percentage
-    global people
+def calculate_tip(amount, tip_percentage, people):    
+    tip = (tip_percentage/100) * amount
+    total = amount + tip
+    each_share = round(total / people, 2)
 
-    ammount = input("Enter bill amount: ").strip()
-    tip_percentage = input("Enter tip percentage: ").strip()
-    people = input("Number of people: ").strip()
-    
-    def validate_input():
-        global ammount
-        global tip_percentage
-        global people
+    return round(tip, 2), round(total, 2), round(each_share, 2)
+     
+
+def validate_input(prompt, cast=float, minimum = 0):
+    while True:
         try:
-            ammount = float(ammount)
-            tip_percentage = float(tip_percentage)
-            people = int(people)
-        except:
-            print("Invalid input")
-            tip_calculator()
-    validate_input()
+            value = cast(input(prompt.strip()))
+        except ValueError or TypeError:
+            print("Please enter a valid number")
+            continue
+        if value < minimum:
+            print(f"Value must be at least {minimum}")
+            continue
+        return value       
+ 
+def main():
+    ammount = validate_input("Enter Bill amount: ") 
+    tip_percentage = validate_input("Enter tip percentage: ")
+    people = validate_input("Number of people: ", cast = int, minimum=1)
 
-    if ammount < 0 or tip_percentage < 0 or people <= 0:
-        print("invlaid input")
-        tip_calculator()
+    tip, total, each_share = calculate_tip(ammount, tip_percentage, people)
 
-    total_tip = (tip_percentage/100) * ammount
-    total_amount = ammount + total_tip
-    each_share = round(total_amount / people, 2)
+    return f"DONE!\n\nTotal amount: {total}\nTotal tip: {tip}\nEach person's share: {each_share}"
 
-
-    return f"DONE!\n\nTotal tip: {total_tip}\nEach person's share: {each_share}"
-
-print(tip_calculator())
+print(main())
